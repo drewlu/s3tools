@@ -629,7 +629,9 @@ class S3(object):
 			raise S3Error(response)
 
 		debug("MD5 sums: computed=%s, received=%s" % (md5_computed, response["headers"]["etag"]))
-		if response["headers"]["etag"].strip('"\'') != md5_hash.hexdigest():
+		resp_md5 = response["headers"]["etag"].strip('"\'')
+		comp_md5 = md5_hash.hexdigest()
+		if resp_md5.upper() != comp_md5.upper():
 			warning("MD5 Sums don't match!")
 			if retries:
 				warning("Retrying upload of %s" % (file.name))
