@@ -77,15 +77,12 @@ class S3UriS3(S3Uri):
 
 	def public_url(self):
 		if self.is_dns_compatible():
-			return "http://%s.s3.amazonaws.com/%s" % (self._bucket, self._object)
+			return "http://storage.aliyun.com:8080/oss/%s/%s" % (self._bucket, self._object)
 		else:
-			return "http://s3.amazonaws.com/%s/%s" % (self._bucket, self._object)
+			return "http://storage.aliyun.com:8080/oss/%s/%s" % (self._bucket, self._object)
 
 	def host_name(self):
-		if self.is_dns_compatible():
-			return "%s.s3.amazonaws.com" % (self._bucket)
-		else:
-			return "s3.amazonaws.com"
+		return "storage.aliyun.com:8080"
 
 	@staticmethod
 	def compose_uri(bucket, object = ""):
@@ -96,7 +93,9 @@ class S3UriS3(S3Uri):
 		m=re.match("(https?://)?([^/]+)/?(.*)", http_url, re.IGNORECASE)
 		hostname, object = m.groups()[1:]
 		hostname = hostname.lower()
-		if hostname == "s3.amazonaws.com":
+
+           
+		if hostname == "storage.aliyun.com:8080":
 			## old-style url: http://s3.amazonaws.com/bucket/object
 			if object.count("/") == 0:
 				## no object given
@@ -105,11 +104,9 @@ class S3UriS3(S3Uri):
 			else:
 				## bucket/object
 				bucket, object = object.split("/", 1)
-		elif hostname.endswith(".s3.amazonaws.com"):
-			## new-style url: http://bucket.s3.amazonaws.com/object
-			bucket = hostname[:-(len(".s3.amazonaws.com"))]
 		else:
 			raise ValueError("Unable to parse URL: %s" % http_url)
+           
 		return S3Uri("s3://%(bucket)s/%(object)s" % { 
 			'bucket' : bucket,
 			'object' : object })

@@ -42,7 +42,9 @@ class S3Request(object):
 	def update_timestamp(self):
 		if self.headers.has_key("date"):
 			del(self.headers["date"])
-		self.headers["x-amz-date"] = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+	#self.headers["x-amz-date"] = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+		self.headers["Date"] = "Mon, 19 Sep 2011 02:53:48 GMT"
+	#self.headers["Date"] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime())
 
 	def format_param_str(self):
 		"""
@@ -63,7 +65,7 @@ class S3Request(object):
 		h  = self.method_string + "\n"
 		h += self.headers.get("content-md5", "")+"\n"
 		h += self.headers.get("content-type", "")+"\n"
-		h += self.headers.get("date", "")+"\n"
+		h += self.headers.get("Date", "")+"\n"
 		for header in self.headers.keys():
 			if header.startswith("x-amz-"):
 				h += header+":"+str(self.headers[header])+"\n"
@@ -73,7 +75,7 @@ class S3Request(object):
 		debug("SignHeaders: " + repr(h))
 		signature = sign_string(h)
 
-		self.headers["Authorization"] = "AWS "+self.s3.config.access_key+":"+signature
+		self.headers["Authorization"] = "OSS "+self.s3.config.access_key+":"+signature
 
 	def get_triplet(self):
 		self.update_timestamp()
@@ -463,6 +465,7 @@ class S3(object):
 	def send_request(self, request, body = None, retries = _max_retries):
 		method_string, resource, headers = request.get_triplet()
 		debug("Processing request, please wait...")
+		print("Processing request, please wait...")
 		if not headers.has_key('content-length'):
 			headers['content-length'] = body and len(body) or 0
 		try:
