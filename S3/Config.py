@@ -15,10 +15,11 @@ class Config(object):
 	_doc = {}
 	access_key = ""
 	secret_key = ""
-	host_base = "s3.amazonaws.com"
-	host_bucket = "%(bucket)s.s3.amazonaws.com"
+	host_base = "storage.aliyun.com:8080"
+	host_bucket = "%(bucket)storage.aliyun.com:8080"
+	#host_bucket = "%(bucket)s.s3.amazonaws.com"
 	simpledb_host = "sdb.amazonaws.com"
-	cloudfront_host = "cloudfront.amazonaws.com"
+	cloudfront_host = "storage.aliyun.com:8080"
 	cloudfront_resource = "/2010-07-15/distribution"
 	verbosity = logging.WARNING
 	progress_meter = True
